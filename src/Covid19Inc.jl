@@ -6,6 +6,8 @@ datapath = normpath(mainpath, "data")
 plotdicts_all = [
     Dict(:num => :CasesFemale, :den => :PopFemale, :lab => "incidens (fall) kvinnor"),
     Dict(:num => :CasesMale, :den => :PopMale, :lab => "incidens (fall) män"),
+    Dict(:num => :CasesFemale2, :den => :PopFemale, :lab => "incidens (fall) kvinnor fas 2"),
+    Dict(:num => :CasesMale2, :den => :PopMale, :lab => "incidens (fall) män fas 2"),
     Dict(:num => :HospFemale, :den => :PopFemale, :lab => "incidens (sjukhus) kvinnor"),
     Dict(:num => :HospMale, :den => :PopMale, :lab => "incidens (sjukhus) män"),
     Dict(:num => :ICUFemale, :den => :PopFemale, :lab => "incidens (IVA) kvinnor"),
@@ -22,9 +24,9 @@ wpp2019 = CSV.File(normpath(datapath, "WPP2019_PopulationByAgeSex_Medium.csv")) 
 
 ageaggrs = Dict(
     :i10o90 => DataFrame(AgeGrpStart = wpp2019[:AgeGrpStart][1:21],
-        AgeGrp10Start = vcat(map(x->fld(x,10)*10, wpp2019[:AgeGrpStart][1:20]),90)),
+        AgeGrpAStart = vcat(map(x->fld(x,10)*10, wpp2019[:AgeGrpStart][1:20]),90)),
     :i10o80 => DataFrame(AgeGrpStart = wpp2019[:AgeGrpStart][1:21],
-        AgeGrp10Start = vcat(map(x->fld(x,10)*10, wpp2019[:AgeGrpStart][1:18]),fill(80,3)))
+        AgeGrpAStart = vcat(map(x->fld(x,10)*10, wpp2019[:AgeGrpStart][1:18]),fill(80,3)))
 )
 
 function ages10_loct(loc, ageaggr, t)
@@ -32,7 +34,7 @@ function ages10_loct(loc, ageaggr, t)
     wpp_sub = wpp2019[(wpp2019[:LocID].==loc) .& (wpp2019[:Time].==t),
         [:AgeGrpStart, :PopMale, :PopFemale]]
     by(join(wpp_sub, inframe, on = :AgeGrpStart),
-        :AgeGrp10Start,
+        :AgeGrpAStart,
         PopFemale = :PopFemale => x->(sum(x.*1000)),
         PopMale = :PopMale => x->(sum(x.*1000)))
 end
@@ -40,7 +42,7 @@ end
 function covid_pop(loc, ageaggr, enddate)
     covid = CSV.File(normpath(datapath, "$(loc)_covid19_$(enddate).csv")) |> DataFrame
     yr = Dates.year(Date(enddate))
-    df = join(ages10_loct(loc, ageaggr, yr), covid, on = :AgeGrp10Start)
+    df = join(ages10_loct(loc, ageaggr, yr), covid, on = :AgeGrpAStart)
     Dict(:loc => loc, :enddate => enddate, :df => df)
 end
 
@@ -58,7 +60,7 @@ function covidpl(lcd)
     p = @pgf Axis({ymode="log", xlabel="Ålder",
             title="COVID-19 $(locs[lcd[:loc]]) till $(lcd[:enddate])",
             legend_pos="outer north east", xmajorgrids, ymajorgrids, yminorgrids})
-    ages = df[:AgeGrp10Start]
+    ages = df[:AgeGrpAStart]
     plotcolors = distinguishable_colors(length(plotdicts)+1, [RGB(1,1,1)])[2:end]
     for (i, pd) in enumerate(plotdicts)
         rate = df[pd[:num]] ./ df[pd[:den]]
