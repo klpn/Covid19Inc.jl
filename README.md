@@ -16,6 +16,21 @@ contains data for Italy (WPP location 380) up to 2020-03-26.
 Sources for the data are given in the
 BibTeX file [`data/sources.bib`](https://github.com/klpn/Covid19Inc.jl/blob/master/data/sources.bib).
 
+Note that the confirmed cases are only a fraction of all those
+infected, and, for many locations, might be seen as reflecting
+the incidence in COVID-19 with relatively severe symptoms. Also,
+the ratios between ages and sexes may be biased because of the
+infection initially entering a certain segment of the population.
+For example, the data for Denmark (location 208) contains the columns
+`Cases(Female|Male)2?`, where the first two columns contain the
+cumulative number of cases since February, and the later two (ending
+with 2) contain the number of cases since the phase beginning on
+2020-03-12, where only those with symptons requiring hospitalization
+are tested
+([SSI](https://www.ssi.dk/aktuelt/sygdomsudbrud/coronavirus/covid-19-i-danmark-epidemiologisk-overvaagningsrapport)).
+As can be seen, the sex ratios in some age groups differ between the
+different phases.
+
 The repository also provides a Julia module for plotting incidence by
 age and sex, using the [PGFPlotsX.jl](https://github.com/KristofferC/PGFPlotsX.jl)
 package. In order to provide
