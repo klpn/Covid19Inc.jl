@@ -17,7 +17,7 @@ plotdicts_all = [
 ]
 locs = Dict(
     56 => "Belgien", 208 => "Danmark", 380 => "Italien", 578 => "Norge",
-    620 => "Portugal", 724 => "Spanien"
+    620 => "Portugal", 724 => "Spanien", 752 => "Sverige"
 )
 
 wpp2019 = CSV.File(normpath(datapath, "WPP2019_PopulationByAgeSex_Medium.csv")) |> DataFrame
