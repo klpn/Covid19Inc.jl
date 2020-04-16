@@ -27,7 +27,7 @@ cumulative number of cases since February, and `CasesFemale2` and
 `CasesMale2` contain the number of cases since 2020-03-12, when
 Denmark entered a second phase, where only those with symptons
 requiring hospitalization are tested
-([SSI](https://www.ssi.dk/aktuelt/sygdomsudbrud/coronavirus/covid-19-i-danmark-epidemiologisk-overvaagningsrapport)).
+([SSI](https://www.ssi.dk/aktuelt/sygdomsudbrud/coronavirus/covid-19-i-danmark-epidemiologisk-overvaagningsrapport)). For later Danish reports, where the cases since 2020-03-12 predominant, `CasesFemale1` and `CasesMale1` contain the cases before that date.
 As can be seen, the sex ratios for some age groups differ between the
 different phases.
 

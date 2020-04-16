@@ -6,6 +6,8 @@ datapath = normpath(mainpath, "data")
 plotdicts_all = [
     Dict(:num => :CasesFemale, :den => :PopFemale, :lab => "incidens (fall) kvinnor"),
     Dict(:num => :CasesMale, :den => :PopMale, :lab => "incidens (fall) män"),
+    Dict(:num => :CasesFemale1, :den => :PopFemale, :lab => "incidens (fall) kvinnor fas 1"),
+    Dict(:num => :CasesMale1, :den => :PopMale, :lab => "incidens (fall) män fas 1"),
     Dict(:num => :CasesFemale2, :den => :PopFemale, :lab => "incidens (fall) kvinnor fas 2"),
     Dict(:num => :CasesMale2, :den => :PopMale, :lab => "incidens (fall) män fas 2"),
     Dict(:num => :HospFemale, :den => :PopFemale, :lab => "incidens (sjukhus) kvinnor"),
