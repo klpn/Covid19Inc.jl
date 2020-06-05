@@ -28,7 +28,11 @@ ageaggrs = Dict(
     :i10o90 => DataFrame(AgeGrpStart = wpp2019[:AgeGrpStart][1:21],
         AgeGrpAStart = vcat(map(x->fld(x,10)*10, wpp2019[:AgeGrpStart][1:20]),90)),
     :i10o80 => DataFrame(AgeGrpStart = wpp2019[:AgeGrpStart][1:21],
-        AgeGrpAStart = vcat(map(x->fld(x,10)*10, wpp2019[:AgeGrpStart][1:18]),fill(80,3)))
+        AgeGrpAStart = vcat(map(x->fld(x,10)*10, wpp2019[:AgeGrpStart][1:18]),fill(80,3))),
+    :i40i10o90 => DataFrame(AgeGrpStart = wpp2019[:AgeGrpStart][1:21],
+        AgeGrpAStart = vcat(fill(0, 8), map(x->fld(x,10)*10, wpp2019[:AgeGrpStart][9:20]),90)),
+    :i50i10i70i5o90 => DataFrame(AgeGrpStart = wpp2019[:AgeGrpStart][1:21],
+        AgeGrpAStart = vcat(fill(0, 10), fill(50, 2), fill(60, 2), 70, 75, 80, 85, fill(90, 3)))
 )
 
 function ages10_loct(loc, ageaggr, t)
@@ -45,6 +49,8 @@ function covid_pop(loc, ageaggr, enddate)
     covid = CSV.File(normpath(datapath, "$(loc)_covid19_$(enddate).csv")) |> DataFrame
     yr = Dates.year(Date(enddate))
     df = join(ages10_loct(loc, ageaggr, yr), covid, on = :AgeGrpAStart)
+    df[:AgeGrpAMean] = vcat(map((a,b) -> Int(a+(b-a)*.8), df[:AgeGrpAStart][1:end-1],
+        df[:AgeGrpAStart][2:end]), df[:AgeGrpAStart][end]+5)
     Dict(:loc => loc, :enddate => enddate, :df => df)
 end
 
@@ -62,7 +68,7 @@ function covidpl(lcd)
     p = @pgf Axis({ymode="log", xlabel="Ålder",
             title="COVID-19 $(locs[lcd[:loc]]) till $(lcd[:enddate])",
             legend_pos="outer north east", xmajorgrids, ymajorgrids, yminorgrids})
-    ages = df[:AgeGrpAStart]
+    ages = df[:AgeGrpAMean]
     plotcolors = distinguishable_colors(length(plotdicts)+1, [RGB(1,1,1)])[2:end]
     for (i, pd) in enumerate(plotdicts)
         rate = df[pd[:num]] ./ df[pd[:den]]
